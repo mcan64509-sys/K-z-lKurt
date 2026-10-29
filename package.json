@@ -1,6 +1,6 @@
 {
   "name": "kizil-kurt-kurucu-bot",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "description": "KIZIL KURT Discord sunucu kurulumu, rol seçimi, ticket ve güvenlik botu.",
   "main": "index.js",
@@ -9,11 +9,17 @@
     "check": "node --check index.js"
   },
   "dependencies": {
+    "@discord-player/extractor": "^7.1.0",
+    "@discordjs/voice": "^0.18.0",
+    "@snazzah/davey": "^0.1.11",
+    "discord-api-types": "0.38.52",
+    "discord-player": "^7.2.0",
+    "discord-player-youtubedlp": "^1.0.0",
     "discord.js": "^14.22.1",
     "dotenv": "^16.6.1",
     "pg": "^8.16.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   }
 }

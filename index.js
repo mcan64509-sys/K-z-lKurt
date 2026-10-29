@@ -17,6 +17,7 @@ const {
   SlashCommandBuilder,
 } = require('discord.js');
 const storage = require('./storage');
+const systems = require('./systems');
 
 function envValue(name, fallback = '') {
   const value = String(process.env[name] || fallback).trim();
@@ -67,6 +68,7 @@ const commands = [new SlashCommandBuilder()
   new SlashCommandBuilder().setName('ticket-ekle').setDescription('Ticket kanalına kullanıcı ekler').addUserOption(o => o.setName('üye').setDescription('Eklenecek üye').setRequired(true)).setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
   new SlashCommandBuilder().setName('ticket-çıkar').setDescription('Ticket kanalından kullanıcı çıkarır').addUserOption(o => o.setName('üye').setDescription('Çıkarılacak üye').setRequired(true)).setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 ];
+commands.push(...systems.commands);
 
 const rolePlan = [
   { key: 'founder', name: '🔴・LİDER', color: 0xff0000, permissions: [PermissionFlagsBits.Administrator], hoist: true },
@@ -339,6 +341,7 @@ async function buildServer(guild) {
 client.once('clientReady', async () => {
   console.log(`☠ ${client.user.tag} aktif.`);
   await storage.init();
+  await systems.init(client);
   const rest = new REST({ version: '10' }).setToken(TOKEN);
   await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands.map(command => command.toJSON()) });
   for (const guild of client.guilds.cache.values()) {
@@ -364,6 +367,8 @@ client.on('interactionCreate', async (interaction) => {
       ephemeral: true,
     });
   }
+
+  if (interaction.isChatInputCommand() && await systems.handleInteraction(interaction)) return;
 
   if (interaction.isChatInputCommand()) {
     const name = interaction.commandName;
@@ -729,6 +734,7 @@ client.on('guildMemberAdd', async (member) => {
 
 async function shutdown(signal) {
   console.log(`${signal} alındı; bot güvenli şekilde kapatılıyor.`);
+  await systems.shutdown().catch(() => null);
   client.destroy();
   process.exit(0);
 }
