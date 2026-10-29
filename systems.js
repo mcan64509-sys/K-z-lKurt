@@ -207,11 +207,20 @@ async function handleLog(interaction) {
   const cfg = CONFIG.types[type];
   const curlAmount = type === 'general' ? (interaction.options.getInteger('kivrik') || 0) : 0;
   const note = interaction.options.getString('not') || null;
-  const voiceName = type === 'general' ? '🛡️・General' : '🕷️・F9';
-  const voice = await interaction.guild.channels.fetch(cfg.voiceChannelId).catch(() => null)
-    || interaction.guild.channels.cache.find(c => c.name === voiceName && c.isVoiceBased());
-  const out = await logChannel(type);
-  if (!voice?.isVoiceBased() || !out) return interaction.editReply('❌ Ses veya metin log kanalı bulunamadı.');
+  await interaction.guild.channels.fetch().catch(() => null);
+  const wanted = type === 'general' ? 'general' : 'f9';
+  const voice = interaction.guild.channels.cache.get(cfg.voiceChannelId)
+    || await interaction.guild.channels.fetch(cfg.voiceChannelId).catch(() => null)
+    || interaction.guild.channels.cache.find(c => c.isVoiceBased() && c.name.toLocaleLowerCase('tr').includes(wanted));
+  let out = await logChannel(type);
+  if (!out && interaction.channel?.isTextBased()
+      && interaction.channel.name.toLocaleLowerCase('tr').includes(wanted)) out = interaction.channel;
+  if (!voice?.isVoiceBased()) {
+    return interaction.editReply(`❌ **${cfg.label} ses kanalı bulunamadı.**\nBeklenen ID: \`${cfg.voiceChannelId}\`\nBotun kanala **Kanalı Gör** izni olduğunu kontrol et.`);
+  }
+  if (!out?.isTextBased()) {
+    return interaction.editReply(`❌ **${cfg.label} metin/log kanalı bulunamadı.**\nBeklenen ID: \`${cfg.logChannelId}\`\nKomutu ilgili General/F9 log kanalında kullan.`);
+  }
   const members = [...voice.members.values()].filter(m => !m.user.bot);
   if (!members.length) return interaction.editReply('❌ Ses kanalında kullanıcı yok.');
   const db = await pool.connect();

@@ -1,5 +1,7 @@
 # Kızıl Kurt Kurucu Bot
 
+> v2.3: General/F9 kanal bulma sistemi ID, kanal adı ve komutun kullanıldığı kanal ile yedekli çalışır; eksik ses veya metin kanalını ayrı bildirir.
+
 ## v2.1 sade kanal düzeni
 
 Boss Bildirimleri, General ve F9 üstte ayrı ve sade alanlardır. General/F9 set logları, ticket kayıtları ve birleştirilmiş sistem kayıtları yalnızca yetkililerin gördüğü en alttaki `📋・LOGLAR` kategorisinde tutulur.
