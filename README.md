@@ -57,3 +57,4 @@ INVITE_FILTER=true
 SPAM_FILTER=true
 ANTI_NUKE=true
 ```
+v2.3 aktif
