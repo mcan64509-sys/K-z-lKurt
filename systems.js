@@ -77,7 +77,8 @@ function card(title, description, color = 0x8b0000) {
 
 function isAuthorized(interaction) {
   return interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
-    || interaction.member?.roles?.cache?.has(CONFIG.authorizedRoleId);
+    || interaction.member?.roles?.cache?.has(CONFIG.authorizedRoleId)
+    || interaction.member?.roles?.cache?.some(role => role.name === '⚔️・BOSS YETKİLİ');
 }
 
 function requireDatabase(interaction) {
@@ -156,7 +157,9 @@ function bossDateForReminder(date, bossTime, reminderTime) {
 
 async function checkNotifications() {
   if (!pool || !client?.isReady()) return;
-  const channel = await client.channels.fetch(CONFIG.bossChannelId).catch(() => null);
+  const guild = client.guilds.cache.get(CONFIG.guildId);
+  const channel = await client.channels.fetch(CONFIG.bossChannelId).catch(() => null)
+    || guild?.channels.cache.find(c => c.name === '⏰・boss-bildirim' && c.isTextBased());
   if (!channel?.isTextBased()) return;
   const now = istanbulNow();
   for (const [type, cfg] of Object.entries(CONFIG.types)) {
@@ -191,7 +194,9 @@ function splitText(text, max = 3900) {
 async function logChannel(type) {
   const id = CONFIG.types[type].logChannelId;
   const channel = await client.channels.fetch(id).catch(() => null);
-  return channel?.isTextBased() ? channel : null;
+  if (channel?.isTextBased()) return channel;
+  const name = type === 'general' ? '🛡️・general-log' : '🕷️・f9-log';
+  return client.guilds.cache.get(CONFIG.guildId)?.channels.cache.find(c => c.name === name && c.isTextBased()) || null;
 }
 
 async function handleLog(interaction) {
@@ -202,7 +207,9 @@ async function handleLog(interaction) {
   const cfg = CONFIG.types[type];
   const curlAmount = type === 'general' ? (interaction.options.getInteger('kivrik') || 0) : 0;
   const note = interaction.options.getString('not') || null;
-  const voice = await interaction.guild.channels.fetch(cfg.voiceChannelId).catch(() => null);
+  const voiceName = type === 'general' ? '🛡️・General' : '🕷️・F9';
+  const voice = await interaction.guild.channels.fetch(cfg.voiceChannelId).catch(() => null)
+    || interaction.guild.channels.cache.find(c => c.name === voiceName && c.isVoiceBased());
   const out = await logChannel(type);
   if (!voice?.isVoiceBased() || !out) return interaction.editReply('❌ Ses veya metin log kanalı bulunamadı.');
   const members = [...voice.members.values()].filter(m => !m.user.bot);

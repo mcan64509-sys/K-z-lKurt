@@ -1,6 +1,6 @@
 {
   "name": "kizil-kurt-kurucu-bot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "KIZIL KURT Discord sunucu kurulumu, rol seçimi, ticket ve güvenlik botu.",
   "main": "index.js",

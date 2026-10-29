@@ -1,5 +1,9 @@
 # Kızıl Kurt Kurucu Bot
 
+## v2.1 sade kanal düzeni
+
+Boss Bildirimleri, General ve F9 üstte ayrı ve sade alanlardır. General/F9 set logları, ticket kayıtları ve birleştirilmiş sistem kayıtları yalnızca yetkililerin gördüğü en alttaki `📋・LOGLAR` kategorisinde tutulur.
+
 Bu sürüm `/kur` komutuyla Kızıl Kurt sunucusunun sade rol/izin düzenini, destek sistemini, yönetim loglarını ve General/F9/Boss odalarını sıfırdan oluşturur.
 
 - Yeni giren üyeye yalnızca `🔒・KAYITSIZ` rolü verilir.

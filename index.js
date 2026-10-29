@@ -109,13 +109,23 @@ const categories = [
     ],
   },
   {
-    name: '⚔️・BOSS & LOG',
+    name: '⏰・BOSS BİLDİRİMLERİ',
     access: 'member',
     channels: [
       ['⏰・boss-bildirim', ChannelType.GuildText, 'General, F9 ve Jotun boss bildirimleri.'],
-      ['🛡️・general-log', ChannelType.GuildText, 'General set ve kıvrık kayıtları.'],
+    ],
+  },
+  {
+    name: '🛡️・GENERAL',
+    access: 'member',
+    channels: [
       ['🛡️・General', ChannelType.GuildVoice],
-      ['🕷️・f9-log', ChannelType.GuildText, 'F9 set kayıtları.'],
+    ],
+  },
+  {
+    name: '🕷️・F9',
+    access: 'member',
+    channels: [
       ['🕷️・F9', ChannelType.GuildVoice],
     ],
   },
@@ -210,7 +220,8 @@ function findChannel(guild, name) {
 }
 
 async function sendLog(guild, channelName, title, description, color = 0x5865f2) {
-  const channel = findChannel(guild, channelName);
+  const channel = findChannel(guild, channelName)
+    || (channelName !== '🎫・ticket-log' ? findChannel(guild, '📋・sistem-log') : null);
   if (!channel) return;
   await createText(channel, title, description.slice(0, 4000), color).catch(() => null);
 }
@@ -261,15 +272,6 @@ async function buildServer(guild) {
     ['📌・yetki-bilgileri', ChannelType.GuildText, 'Yetkili rollerinin görev ve izin sınırları.'],
     ['📋・yetkili-sohbet', ChannelType.GuildText, 'Yönetim ekibi özel sohbeti.'],
     ['📝・başvuru-takip', ChannelType.GuildText, 'Yetkili başvurularını takip et.'],
-    ['🎫・ticket-log', ChannelType.GuildText, 'Destek taleplerinin kayıt alanı.'],
-    ['📥・gelen-log', ChannelType.GuildText, 'Sunucuya katılan üyeler ve davet bilgileri.'],
-    ['📤・giden-log', ChannelType.GuildText, 'Sunucudan ayrılan üyeler.'],
-    ['🗑️・mesaj-log', ChannelType.GuildText, 'Silinen ve düzenlenen mesajlar.'],
-    ['🎭・rol-log', ChannelType.GuildText, 'Üye rol değişiklikleri.'],
-    ['🔊・ses-log', ChannelType.GuildText, 'Ses kanalı hareketleri.'],
-    ['🔨・mod-log', ChannelType.GuildText, 'Moderasyon kayıtları.'],
-    ['🛡️・güvenlik-log', ChannelType.GuildText, 'Spam, reklam ve şüpheli hesap uyarıları.'],
-    ['📊・sunucu-log', ChannelType.GuildText, 'Sunucu olay kayıtları.'],
     ['🔊・Yetkili Odası', ChannelType.GuildVoice],
   ]) {
     const permissionOverwrites = name === '🎫・ticket-log'
@@ -312,6 +314,31 @@ async function buildServer(guild) {
       created[name] = channel;
     }
   }
+
+  const logCategory = await guild.channels.create({
+    name: '📋・LOGLAR', type: ChannelType.GuildCategory,
+    permissionOverwrites: staffOverwrites(guild, roles),
+  });
+  created['🛡️・general-log'] = await guild.channels.create({
+    name: '🛡️・general-log', type: ChannelType.GuildText,
+    topic: 'General set ve kıvrık kayıtları.', parent: logCategory.id,
+  });
+  created['🕷️・f9-log'] = await guild.channels.create({
+    name: '🕷️・f9-log', type: ChannelType.GuildText,
+    topic: 'F9 set kayıtları.', parent: logCategory.id,
+  });
+  staffChannels['🎫・ticket-log'] = await guild.channels.create({
+    name: '🎫・ticket-log', type: ChannelType.GuildText,
+    topic: 'Destek taleplerinin kayıt alanı.', parent: logCategory.id,
+    permissionOverwrites: [
+      ...staffOverwrites(guild, roles),
+      { id: roles.support.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
+    ],
+  });
+  await guild.channels.create({
+    name: '📋・sistem-log', type: ChannelType.GuildText,
+    topic: 'Giriş-çık, mesaj, rol, ses, moderasyon ve güvenlik kayıtları.', parent: logCategory.id,
+  });
 
   const welcome = created['💬・genel-sohbet'];
   await createText(welcome, '🐺 KIZIL KURT’A HOŞ GELDİN', 'Sürüye katıldın. Birlikte savaşır, birlikte güçleniriz.\n\n**KIZIL KURT — TEK SÜRÜ, TEK GÜÇ**');
