@@ -36,7 +36,7 @@ Kurulumdan sonra General/F9 ses ve metin kanalları ile boss bildirim kanalını
 - F9 ses: `1565503103715901440`
 - F9 log: `1565503102759739663`
 - Boss bildirim: `1565503098347200722`
-- Log yetkilisi: `1565503060900446430`
+- Log yetkilisi: `1565503059486965902`
 - General/F9 bildirimleri boss saatinden 10 dakika önce gelir.
 - Jotun bildirimi Türkiye saatiyle `00:15`, `18:15`, `21:15` saatlerinde gelir.
 - General/F9 set, bağımsız General kıvrık, manuel ekleme/silme, sonuç ve log geri alma vardır.

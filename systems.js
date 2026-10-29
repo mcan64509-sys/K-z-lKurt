@@ -8,19 +8,19 @@ const { YouTubeDlpExtractor, setFFmpegPath, setYtDlpPath } = require('discord-pl
 
 const CONFIG = {
   guildId: '1229703353378799749',
-  authorizedRoleId: '1565495763470000140',
-  bossChannelId: '1565495798064746546',
+  authorizedRoleId: '1565503059486965902',
+  bossChannelId: '1565503098347200722',
   timezone: 'Europe/Istanbul',
   types: {
     general: {
       label: 'GENERAL', emoji: '🛡️', color: 0x3498db,
-      voiceChannelId: '1565495800677666866', logChannelId: '1565495798735835197',
+      voiceChannelId: '1565503101698441226', logChannelId: '1565503099303628870',
       times: ['01:12', '02:43', '04:12', '05:43', '07:12', '08:43', '10:12', '11:43', '13:12', '14:43', '16:12', '17:43', '19:12', '20:43', '22:12', '23:43'],
       reminderMinutes: 10,
     },
     f9: {
       label: 'F9', emoji: '🕷️', color: 0x9b59b6,
-      voiceChannelId: '1565495802904977478', logChannelId: '1565495801755467937',
+      voiceChannelId: '1565503103715901440', logChannelId: '1565503102759739663',
       times: ['00:12', '02:12', '04:12', '06:12', '08:12', '10:12', '12:12', '14:12', '16:12', '18:12', '20:12', '22:12'],
       reminderMinutes: 10,
     },
