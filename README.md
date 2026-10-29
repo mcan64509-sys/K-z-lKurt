@@ -1,6 +1,12 @@
 # Kızıl Kurt Kurucu Bot
 
-Bu sürüm `/kur` komutuyla Kızıl Kurt sunucusunun rollerini, kategorilerini, destek sistemini ve General/F9/Boss odalarını sıfırdan oluşturur.
+Bu sürüm `/kur` komutuyla Kızıl Kurt sunucusunun sade rol/izin düzenini, destek sistemini, yönetim loglarını ve General/F9/Boss odalarını sıfırdan oluşturur.
+
+- Yeni giren üyeye yalnızca `🔒・KAYITSIZ` rolü verilir.
+- Kayıtsız üye yalnızca Hoş Geldiniz yazı/ses alanını ve destek kanalını görür.
+- Yetkili `/kayit üye` komutuyla `🐺・KIZIL KURT` rolünü verir.
+- Kızıl Kurt rolü verilince takma ada otomatik `【𝐊𝐙𝐋】` eklenir; rol kaldırılınca etiket silinir.
+- `🟠・DOST` genel/bilgilendirme alanlarını, `🐺・KIZIL KURT` ise boss-log ve tüm üye alanlarını görür.
 
 ## Railway Variables
 

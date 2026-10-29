@@ -59,6 +59,8 @@ const commands = [new SlashCommandBuilder()
   new SlashCommandBuilder().setName('temizle').setDescription('Mesajları toplu siler').addIntegerOption(o => o.setName('sayı').setDescription('1-100').setMinValue(1).setMaxValue(100).setRequired(true)).setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
   new SlashCommandBuilder().setName('kilit').setDescription('Kanalı üyelere kilitler').setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
   new SlashCommandBuilder().setName('kilit-aç').setDescription('Kanal kilidini açar').setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+  new SlashCommandBuilder().setName('kayit').setDescription('Üyeye Kızıl Kurt rolü verir').addUserOption(o => o.setName('üye').setDescription('Kayıt edilecek üye').setRequired(true)).setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+  new SlashCommandBuilder().setName('kayitsiz').setDescription('Üyeyi yeniden kayıtsıza alır').addUserOption(o => o.setName('üye').setDescription('Kayıtsıza alınacak üye').setRequired(true)).setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
   new SlashCommandBuilder().setName('seviye').setDescription('Seviyeyi gösterir').addUserOption(o => o.setName('üye').setDescription('Bakılacak üye')),
   new SlashCommandBuilder().setName('sıralama').setDescription('Sunucu XP sıralamasını gösterir'),
   new SlashCommandBuilder().setName('profil').setDescription('Üye profilini gösterir').addUserOption(o => o.setName('üye').setDescription('Bakılacak üye')),
@@ -67,54 +69,25 @@ const commands = [new SlashCommandBuilder()
 ];
 
 const rolePlan = [
-  { key: 'founder', name: '☠・KURUCU', color: 0x0b0b0b, permissions: [PermissionFlagsBits.Administrator], hoist: true },
-  { key: 'cofounder', name: '♛・CO-FOUNDER', color: 0x6f0000, permissions: [PermissionFlagsBits.Administrator], hoist: true },
-  { key: 'admin', name: '⚔・YÖNETİM', color: 0xb00020, permissions: [PermissionFlagsBits.ManageGuild, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageNicknames, PermissionFlagsBits.ViewAuditLog], hoist: true },
-  { key: 'mod', name: '🛡・MODERATÖR', color: 0xe53935, permissions: [PermissionFlagsBits.KickMembers, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageNicknames, PermissionFlagsBits.ViewAuditLog], hoist: true },
+  { key: 'founder', name: '🔴・LİDER', color: 0xff0000, permissions: [PermissionFlagsBits.Administrator], hoist: true },
+  { key: 'admin', name: '🟢・YÖNETİM', color: 0x00d166, permissions: [PermissionFlagsBits.ManageGuild, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles, PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ManageNicknames, PermissionFlagsBits.ViewAuditLog], hoist: true },
+  { key: 'mod', name: '⚔️・BOSS YETKİLİ', color: 0xe53935, permissions: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ModerateMembers, PermissionFlagsBits.ViewAuditLog], hoist: true },
   { key: 'support', name: '🎫・DESTEK', color: 0xff7043, permissions: [], hoist: true },
   { key: 'bot', name: '🤖・BOTLAR', color: 0x5865f2, permissions: [], hoist: true },
-  { key: 'vip', name: '💎・VIP', color: 0xf1c40f, permissions: [], hoist: true },
+  { key: 'friend', name: '🟠・DOST', color: 0xf39c12, permissions: [], hoist: true },
   { key: 'member', name: '🐺・KIZIL KURT', color: 0x992d22, permissions: [], hoist: true },
   { key: 'new', name: '🔒・KAYITSIZ', color: 0x747f8d, permissions: [], hoist: false },
-  { key: 'red', name: '🔴・KIRMIZI', color: 0xe74c3c, permissions: [], hoist: false },
-  { key: 'purple', name: '🟣・MOR', color: 0x9b59b6, permissions: [], hoist: false },
-  { key: 'blue', name: '🔵・MAVİ', color: 0x3498db, permissions: [], hoist: false },
-  { key: 'pink', name: '🌸・PEMBE', color: 0xff69b4, permissions: [], hoist: false },
-  { key: 'green', name: '🟢・YEŞİL', color: 0x2ecc71, permissions: [], hoist: false },
-  { key: 'woman', name: '👩・KADIN', color: 0xed6ea0, permissions: [], hoist: false },
-  { key: 'man', name: '👨・ERKEK', color: 0x4aa3df, permissions: [], hoist: false },
-  { key: 'unspecified', name: '🧑・BELİRTMEK İSTEMİYORUM', color: 0x95a5a6, permissions: [], hoist: false },
-  { key: 'age1', name: '🔹・18–21', color: 0x5dade2, permissions: [], hoist: false },
-  { key: 'age2', name: '🔸・22–25', color: 0xf5b041, permissions: [], hoist: false },
-  { key: 'age3', name: '🔻・26+', color: 0xec7063, permissions: [], hoist: false },
-  { key: 'gamer', name: '🎮・OYUNCU', color: 0x5865f2, permissions: [], hoist: false },
-  { key: 'cars', name: '🚗・ARABA TUTKUNU', color: 0xc0392b, permissions: [], hoist: false },
-  { key: 'music', name: '🎵・MÜZİK', color: 0x9b59b6, permissions: [], hoist: false },
-  { key: 'movies', name: '🎬・FİLM & DİZİ', color: 0x34495e, permissions: [], hoist: false },
-  { key: 'tech', name: '💻・TEKNOLOJİ', color: 0x16a085, permissions: [], hoist: false },
-  { key: 'valorant', name: '🔫・VALORANT', color: 0xe74c3c, permissions: [], hoist: false },
-  { key: 'cs2', name: '💣・CS2', color: 0xe67e22, permissions: [], hoist: false },
-  { key: 'gta', name: '🚘・GTA', color: 0x27ae60, permissions: [], hoist: false },
-  { key: 'minecraft', name: '🧱・MINECRAFT', color: 0x6ab04c, permissions: [], hoist: false },
-  { key: 'announce', name: '📢・DUYURU BİLDİRİMİ', color: 0xf1c40f, permissions: [], hoist: false },
-  { key: 'event', name: '🎉・ETKİNLİK BİLDİRİMİ', color: 0xe056fd, permissions: [], hoist: false },
-  { key: 'giveaway', name: '🎁・ÇEKİLİŞ BİLDİRİMİ', color: 0x22a6b3, permissions: [], hoist: false },
-  { key: 'live', name: '🔴・CANLI YAYIN BİLDİRİMİ', color: 0xeb4d4b, permissions: [], hoist: false },
-  { key: 'active', name: '🥉・AKTİF ÜYE', color: 0xcd7f32, permissions: [], hoist: true },
-  { key: 'veteran', name: '🥈・KIDEMLİ', color: 0xc0c0c0, permissions: [], hoist: true },
-  { key: 'legend', name: '🥇・EFSANE', color: 0xffd700, permissions: [], hoist: true },
-  { key: 'elite', name: '🐺・KIZIL KURT ELİT', color: 0x8b0000, permissions: [], hoist: true },
 ];
 
 const categories = [
   {
-    name: '👋・KAYIT & KARŞILAMA',
+    name: '👋・HOŞ GELDİNİZ',
     access: 'open',
     channels: [
-      ['👋・hoş-geldiniz', ChannelType.GuildText, 'Sunucuya yeni katılan üyeler burada karşılanır.'],
+      ['👋・hoş-geldiniz', ChannelType.GuildText, 'Yeni üyeler burada karşılanır ve kayıt bekler.'],
       ['📜・kurallar', ChannelType.GuildText, 'Sunucu kuralları ve önemli bilgiler.'],
-      ['✅・kayıt-ol', ChannelType.GuildText, 'Butonla kayıt olup üye ve kimlik rolünü seç.'],
-      ['🔊・Kayıt Odası', ChannelType.GuildVoice],
+      ['💬・kayıt-bekleme', ChannelType.GuildText, 'Kayıtsız üyelerin yetkili bekleme sohbeti.'],
+      ['🤝・Hoş Geldiniz', ChannelType.GuildVoice],
     ],
   },
   {
@@ -125,11 +98,12 @@ const categories = [
     ],
   },
   {
-    name: '🐺・KIZIL KURT',
-    access: 'member',
+    name: '📢・BİLGİLENDİRME',
+    access: 'limited',
     channels: [
       ['📢・duyurular', ChannelType.GuildText, 'KIZIL KURT duyuruları.'],
-      ['🎭・roller', ChannelType.GuildText, 'Renk ve topluluk rollerini seç.'],
+      ['🐺・güncel-kadro', ChannelType.GuildText, 'Güncel Kızıl Kurt kadrosu.'],
+      ['⚔️・yetki-dağılımları', ChannelType.GuildText, 'Yetki dağılımları ve görevler.'],
     ],
   },
   {
@@ -144,25 +118,13 @@ const categories = [
     ],
   },
   {
-    name: '💀・TOPLULUK',
-    access: 'member',
+    name: '💬・GENEL',
+    access: 'limited',
     channels: [
-      ['💬・genel-sohbet', ChannelType.GuildText, 'Saygı bekleme, saygını kazan.'],
+      ['💬・genel-sohbet', ChannelType.GuildText, 'Kızıl Kurt genel sohbeti.'],
+      ['💰・ticaret-chat', ChannelType.GuildText, 'Ticaret ve pazar sohbeti.'],
       ['📸・medya', ChannelType.GuildText, 'Fotoğraf, video ve klip paylaşımı.'],
-      ['😂・meme', ChannelType.GuildText, 'Mizah ve caps odası.'],
       ['🤖・bot-komut', ChannelType.GuildText, 'Bot komutları burada kullanılır.'],
-      ['💡・öneriler', ChannelType.GuildText, 'Sunucu için önerilerini paylaş.'],
-    ],
-  },
-  {
-    name: '🎮・OYUN MERKEZİ',
-    access: 'member',
-    channels: [
-      ['🎯・ekip-ara', ChannelType.GuildText, 'Oyun arkadaşı ve ekip bul.'],
-      ['🏆・oyun-sohbet', ChannelType.GuildText, 'Oyunlar hakkında konuş.'],
-      ['🎮・Oyun Odası 1', ChannelType.GuildVoice],
-      ['🎮・Oyun Odası 2', ChannelType.GuildVoice],
-      ['🏆・Ranked Takım', ChannelType.GuildVoice],
     ],
   },
   {
@@ -170,10 +132,10 @@ const categories = [
     access: 'member',
     channels: [
       ['🐺・KIZIL KURT', ChannelType.GuildVoice],
-      ['🔥・Muhabbet', ChannelType.GuildVoice],
-      ['🌙・Gece Tayfası', ChannelType.GuildVoice],
+      ['🔥・Genel Sohbet', ChannelType.GuildVoice],
+      ['⚔️・Savaş Ekibi', ChannelType.GuildVoice],
+      ['🎬・Film Dizi Odası', ChannelType.GuildVoice],
       ['🎵・Müzik 1', ChannelType.GuildVoice],
-      ['🎶・Müzik 2', ChannelType.GuildVoice],
       ['➕・Oda Oluştur', ChannelType.GuildVoice],
       ['💤・AFK', ChannelType.GuildVoice],
     ],
@@ -184,7 +146,6 @@ function staffOverwrites(guild, roles) {
   return [
     { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
     { id: roles.founder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak] },
-    { id: roles.cofounder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak] },
     { id: roles.admin.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak] },
     { id: roles.mod.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak] },
   ];
@@ -196,12 +157,43 @@ function memberOverwrites(guild, roles) {
     { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
     { id: roles.member.id, allow: access },
     { id: roles.founder.id, allow: access },
-    { id: roles.cofounder.id, allow: access },
     { id: roles.admin.id, allow: access },
     { id: roles.mod.id, allow: access },
     { id: roles.support.id, allow: access },
     { id: roles.bot.id, allow: access },
   ];
+}
+
+function limitedOverwrites(guild, roles) {
+  const access = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak];
+  return [
+    { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
+    { id: roles.friend.id, allow: access },
+    { id: roles.member.id, allow: access },
+    { id: roles.founder.id, allow: access },
+    { id: roles.admin.id, allow: access },
+    { id: roles.mod.id, allow: access },
+    { id: roles.support.id, allow: access },
+    { id: roles.bot.id, allow: access },
+  ];
+}
+
+function readOnlyOverwrites(guild, roles, accessMode) {
+  const viewers = accessMode === 'member'
+    ? [roles.member]
+    : accessMode === 'limited'
+      ? [roles.friend, roles.member]
+      : [];
+  const overwrites = accessMode === 'open'
+    ? [{ id: guild.roles.everyone.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory], deny: [PermissionFlagsBits.SendMessages] }]
+    : [{ id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] }];
+  for (const role of viewers) {
+    overwrites.push({ id: role.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory], deny: [PermissionFlagsBits.SendMessages] });
+  }
+  for (const role of [roles.founder, roles.admin, roles.mod, roles.support, roles.bot]) {
+    overwrites.push({ id: role.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
+  }
+  return overwrites;
 }
 
 async function createText(channel, title, description, color = 0x8b0000, components = []) {
@@ -289,7 +281,7 @@ async function buildServer(guild) {
   await createText(
     staffChannels['📌・yetki-bilgileri'],
     '🔐 YETKİ DAĞILIMI',
-    '**☠・KURUCU:** Tam yönetici; tüm sunucu ve rol ayarları.\n**♛・CO-FOUNDER:** Tam yönetici; kurucuyla aynı yönetim erişimi.\n**⚔・YÖNETİM:** Kanal/rol yönetimi, ban, kick, timeout, mesaj ve sunucu yönetimi.\n**🛡・MODERATÖR:** Mesaj yönetimi, kick, timeout, takma ad ve denetim kayıtları.\n**🎫・DESTEK:** Yalnızca açılan destek talepleri ve ticket kaydı; genel yönetim yetkisi yok.\n\nRenk, yaş, cinsiyet, oyun ve ilgi alanı rollerinin hiçbir yönetim yetkisi yoktur.',
+    '**🔴・LİDER:** Tam yönetici; tüm sunucu ve rol ayarları.\n**🟢・YÖNETİM:** Kanal/rol yönetimi, ban, kick, timeout ve mesaj yönetimi.\n**⚔️・BOSS YETKİLİ:** Boss/log işlemleri ve temel moderasyon.\n**🎫・DESTEK:** Yalnızca destek talepleri ve ticket kayıtları.\n**🟠・DOST:** Genel ve bilgilendirme alanlarına sınırlı erişim.\n**🐺・KIZIL KURT:** Boss, log, topluluk ve tüm üye ses alanlarına erişim.\n**🔒・KAYITSIZ:** Yalnızca Hoş Geldiniz alanını görür.',
     0x8b0000,
   );
 
@@ -301,35 +293,19 @@ async function buildServer(guild) {
 
   const created = {};
   for (const categoryPlan of categories) {
-    const baseOverwrites = categoryPlan.access === 'member' ? memberOverwrites(guild, roles) : [];
+    const baseOverwrites = categoryPlan.access === 'member'
+      ? memberOverwrites(guild, roles)
+      : categoryPlan.access === 'limited'
+        ? limitedOverwrites(guild, roles)
+        : [];
     const category = await guild.channels.create({
       name: categoryPlan.name,
       type: ChannelType.GuildCategory,
       permissionOverwrites: baseOverwrites,
     });
     for (const [name, type, topic] of categoryPlan.channels) {
-      const readOnly = ['📜・kurallar', '📢・duyurular', '🎭・roller', '👋・hoş-geldiniz', '✅・kayıt-ol', '📩・destek-aç', '⏰・boss-bildirim', '🛡️・general-log', '🕷️・f9-log'].includes(name);
-      const permissionOverwrites = readOnly
-        ? categoryPlan.access === 'member'
-          ? [
-              { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.member.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory], deny: [PermissionFlagsBits.SendMessages] },
-              { id: roles.support.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory], deny: [PermissionFlagsBits.SendMessages] },
-              { id: roles.bot.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
-              { id: roles.founder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.cofounder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.admin.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.mod.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-            ]
-          : [
-              { id: guild.roles.everyone.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory], deny: [PermissionFlagsBits.SendMessages] },
-              { id: roles.bot.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
-              { id: roles.founder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.cofounder.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.admin.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-              { id: roles.mod.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] },
-            ]
-        : undefined;
+      const readOnly = ['📜・kurallar', '📢・duyurular', '🐺・güncel-kadro', '⚔️・yetki-dağılımları', '👋・hoş-geldiniz', '📩・destek-aç', '⏰・boss-bildirim', '🛡️・general-log', '🕷️・f9-log'].includes(name);
+      const permissionOverwrites = readOnly ? readOnlyOverwrites(guild, roles, categoryPlan.access) : undefined;
       const channel = await guild.channels.create({ name, type, topic, parent: category.id, permissionOverwrites });
       created[name] = channel;
     }
@@ -339,32 +315,7 @@ async function buildServer(guild) {
   await createText(welcome, '🐺 KIZIL KURT’A HOŞ GELDİN', 'Sürüye katıldın. Birlikte savaşır, birlikte güçleniriz.\n\n**KIZIL KURT — TEK SÜRÜ, TEK GÜÇ**');
   await createText(created['📜・kurallar'], '📜 SUNUCU KURALLARI', '1. Üyelere karşı saygılı ol.\n2. Spam, flood ve gereksiz etiket yasaktır.\n3. Reklam ve izinsiz bağlantı paylaşımı yasaktır.\n4. NSFW ve rahatsız edici içerik yasaktır.\n5. Yetkililerin uyarılarını dikkate al.\n6. Discord Topluluk Kuralları geçerlidir.');
   await createText(created['📢・duyurular'], '📢 KIZIL KURT DUYURULARI', 'Tüm önemli gelişmeler ve etkinlikler burada paylaşılacak.');
-  const row = (...buttons) => [new ActionRowBuilder().addComponents(...buttons)];
-  const button = (id, label, emoji, style = ButtonStyle.Secondary) => new ButtonBuilder().setCustomId(id).setLabel(label).setEmoji(emoji).setStyle(style);
-  await createText(created['👋・hoş-geldiniz'], '👋 KIZIL KURT’A HOŞ GELDİN', 'Yeni gelen üyeler burada karşılanır. Kayıt olmak için **✅・kayıt-ol** kanalına geç ve sana uygun butonu seç.', 0x8b0000);
-  await createText(created['✅・kayıt-ol'], '✅ HIZLI KAYIT', 'Önce cinsiyet seçimini yap, ardından açılan menüden yaş grubunu seç. İşlem tamamlanınca **KAYITSIZ** rolün kaldırılır; **KIZIL KURT + cinsiyet + yaş** rollerin otomatik verilir.', 0x2ecc71, row(
-    button('register:gender:woman', 'Kadın', '👩', ButtonStyle.Danger),
-    button('register:gender:man', 'Erkek', '👨', ButtonStyle.Primary),
-    button('register:gender:unspecified', 'Belirtmek İstemiyorum', '🧑', ButtonStyle.Secondary),
-  ));
-  await createText(created['🎭・roller'], '🎨 RENK ROLLERİ', 'Yalnızca kullanıcı adının rengini değiştirir, hiçbir yetki vermez. Aynı anda tek renk kullanabilirsin.', 0x8b0000, row(
-    button('self:color:red', 'Kırmızı', '🔴', ButtonStyle.Danger), button('self:color:purple', 'Mor', '🟣', ButtonStyle.Primary), button('self:color:blue', 'Mavi', '🔵', ButtonStyle.Primary), button('self:color:pink', 'Pembe', '🌸'), button('self:color:green', 'Yeşil', '🟢', ButtonStyle.Success),
-  ));
-  await createText(created['🎭・roller'], '🪪 KİMLİK ROLLERİ', 'İsteğe bağlıdır. Kendini en rahat hissettiğin seçeneği seçebilirsin.', 0x9b59b6, row(
-    button('self:identity:woman', 'Kadın', '👩'), button('self:identity:man', 'Erkek', '👨'), button('self:identity:unspecified', 'Belirtmek İstemiyorum', '🧑'),
-  ));
-  await createText(created['🎭・roller'], '🎂 YAŞ GRUBU', 'Gerçek yaşını yazmadan yalnızca yaş grubunu seçebilirsin.', 0x3498db, row(
-    button('self:age:age1', '18–21', '🔹'), button('self:age:age2', '22–25', '🔸'), button('self:age:age3', '26+', '🔻'), button('self:age:clear', 'Kaldır', '❌'),
-  ));
-  await createText(created['🎭・roller'], '✨ İLGİ ALANLARI', 'Birden fazla seçebilirsin; aynı butona tekrar basınca rol kaldırılır.', 0x2ecc71, row(
-    button('self:toggle:gamer', 'Oyuncu', '🎮'), button('self:toggle:cars', 'Arabalar', '🚗'), button('self:toggle:music', 'Müzik', '🎵'), button('self:toggle:movies', 'Film & Dizi', '🎬'), button('self:toggle:tech', 'Teknoloji', '💻'),
-  ));
-  await createText(created['🎭・roller'], '🎮 OYUN ROLLERİ', 'Oynadığın oyunları seçerek ekip ilanlarını takip edebilirsin.', 0xe67e22, row(
-    button('self:toggle:valorant', 'Valorant', '🔫'), button('self:toggle:cs2', 'CS2', '💣'), button('self:toggle:gta', 'GTA', '🚘'), button('self:toggle:minecraft', 'Minecraft', '🧱'),
-  ));
-  await createText(created['🎭・roller'], '🔔 BİLDİRİM TERCİHLERİ', 'Yalnızca almak istediğin bildirimleri seç; @everyone yerine bu roller etiketlenir.', 0xf1c40f, row(
-    button('self:toggle:announce', 'Duyuru', '📢'), button('self:toggle:event', 'Etkinlik', '🎉'), button('self:toggle:giveaway', 'Çekiliş', '🎁'), button('self:toggle:live', 'Canlı Yayın', '🔴'),
-  ));
+  await createText(created['👋・hoş-geldiniz'], '👋 KIZIL KURT’A HOŞ GELDİN', 'Yeni gelen üyeler otomatik olarak **🔒・KAYITSIZ** rolünü alır. Yalnızca bu karşılama alanını görebilir. Yetkili kayıt yaptıktan sonra **🐺・KIZIL KURT** rolüyle ana sunucu açılır.', 0x8b0000);
 
   const ticketButtons = [new ActionRowBuilder().addComponents(
     new ButtonBuilder().setCustomId('ticket:support').setLabel('Genel Destek').setEmoji('🎫').setStyle(ButtonStyle.Primary),
@@ -454,6 +405,24 @@ client.on('interactionCreate', async (interaction) => {
     if (name === 'kilit' || name === 'kilit-aç') {
       const locked = name === 'kilit'; await interaction.channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { SendMessages: locked ? false : null });
       await interaction.reply(locked ? '🔒 Kanal kilitlendi.' : '🔓 Kanal kilidi açıldı.'); return;
+    }
+    if (name === 'kayit' || name === 'kayitsiz') {
+      if (!member) return interaction.reply({ content: '❌ Üye bulunamadı.', ephemeral: true });
+      const memberRole = interaction.guild.roles.cache.find(role => role.name === '🐺・KIZIL KURT');
+      const newRole = interaction.guild.roles.cache.find(role => role.name === '🔒・KAYITSIZ');
+      if (!memberRole || !newRole) return interaction.reply({ content: '❌ Kayıt rolleri bulunamadı.', ephemeral: true });
+      if (name === 'kayit') {
+        await member.roles.remove(newRole).catch(() => null);
+        await member.roles.add(memberRole);
+        await interaction.reply(`✅ ${user} kayıt edildi ve **🐺・KIZIL KURT** rolü verildi.`);
+        await sendLog(interaction.guild, '🎭・rol-log', '✅ ÜYE KAYIT EDİLDİ', `${user}\nYetkili: ${interaction.user}`, 0x2ecc71);
+      } else {
+        await member.roles.remove(memberRole).catch(() => null);
+        await member.roles.add(newRole);
+        await interaction.reply(`🔒 ${user} yeniden **KAYITSIZ** durumuna alındı.`);
+        await sendLog(interaction.guild, '🎭・rol-log', '🔒 ÜYE KAYITSIZA ALINDI', `${user}\nYetkili: ${interaction.user}`, 0xf39c12);
+      }
+      return;
     }
     if (name === 'seviye' || name === 'profil') {
       const target = user || interaction.user; const data = await storage.getXp(interaction.guildId, target.id);
@@ -560,7 +529,7 @@ client.on('interactionCreate', async (interaction) => {
     if (existing) return interaction.reply({ content: `Zaten açık bir talebin var: ${existing}`, ephemeral: true });
 
     const category = interaction.guild.channels.cache.find((channel) => channel.type === ChannelType.GuildCategory && channel.name === '🎟️・AÇIK TALEPLER');
-    const staffNames = ['☠・KURUCU', '♛・CO-FOUNDER', '⚔・YÖNETİM', '🛡・MODERATÖR', '🎫・DESTEK'];
+    const staffNames = ['🔴・LİDER', '🟢・YÖNETİM', '⚔️・BOSS YETKİLİ', '🎫・DESTEK'];
     const overwrites = [
       { id: interaction.guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
       { id: interaction.user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles] },
@@ -586,7 +555,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 
   if (interaction.customId === 'ticket_claim') {
-    const staffNames = ['☠・KURUCU', '♛・CO-FOUNDER', '⚔・YÖNETİM', '🛡・MODERATÖR', '🎫・DESTEK'];
+    const staffNames = ['🔴・LİDER', '🟢・YÖNETİM', '⚔️・BOSS YETKİLİ', '🎫・DESTEK'];
     const isStaff = interaction.member.roles.cache.some(role => staffNames.includes(role.name));
     if (!isStaff) return interaction.reply({ content: 'Bu düğmeyi yalnızca destek ekibi kullanabilir.', ephemeral: true });
     await interaction.reply(`🙋 Talebi ${interaction.user} üstlendi.`);
@@ -595,7 +564,7 @@ client.on('interactionCreate', async (interaction) => {
 
   if (interaction.customId === 'ticket_close') {
     const ownerId = interaction.channel.topic?.replace('ticket-owner:', '');
-    const staffNames = ['☠・KURUCU', '♛・CO-FOUNDER', '⚔・YÖNETİM', '🛡・MODERATÖR', '🎫・DESTEK'];
+    const staffNames = ['🔴・LİDER', '🟢・YÖNETİM', '⚔️・BOSS YETKİLİ', '🎫・DESTEK'];
     const isStaff = interaction.member.roles.cache.some((role) => staffNames.includes(role.name));
     if (interaction.user.id !== ownerId && !isStaff) {
       return interaction.reply({ content: 'Bu talebi kapatma yetkin yok.', ephemeral: true });
@@ -628,7 +597,7 @@ client.on('interactionCreate', async (interaction) => {
   await interaction.update({ content: '☠ Kurulum başladı. Kanallar silineceği için bu mesaj kaybolabilir…', components: [] });
   try {
     const welcome = await buildServer(guild);
-    await createText(welcome, '✅ KURULUM TAMAMLANDI', 'KIZIL KURT sunucusu başarıyla sıfırdan kuruldu. Sunucu sahibi otomatik olarak **☠・KURUCU** rolünü aldı.');
+    await createText(welcome, '✅ KURULUM TAMAMLANDI', 'KIZIL KURT sunucusu başarıyla sıfırdan kuruldu. Sunucu sahibi otomatik olarak **🔴・LİDER** rolünü aldı.');
     console.log(`✅ ${guild.name} kurulumu tamamlandı.`);
   } catch (error) {
     console.error('Kurulum hatası:', error);
@@ -658,7 +627,7 @@ client.on('messageCreate', async (message) => {
   const data = await storage.addXp(message.guild.id, message.author.id, gained).catch(() => null);
   if (data && Number(data.level) > Number(data.previousLevel ?? data.level)) {
     await message.channel.send(`🎉 ${message.author}, **seviye ${data.level}** oldun!`).catch(() => null);
-    const rewards = [[5, '🥉・AKTİF ÜYE'], [15, '🥈・KIDEMLİ'], [30, '🥇・EFSANE'], [50, '🐺・KIZIL KURT ELİT']];
+    const rewards = [];
     for (const [level, roleName] of rewards) if (data.level >= level) { const role = message.guild.roles.cache.find(r => r.name === roleName); if (role) await message.member.roles.add(role).catch(() => null); }
   }
 });
@@ -682,6 +651,14 @@ client.on('guildMemberUpdate', async (oldMember, newMember) => {
   const added = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id)).map(role => role.name);
   const removed = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id)).map(role => role.name);
   if (!added.length && !removed.length) return;
+  const tag = '【𝐊𝐙𝐋】';
+  const cleanName = String(newMember.displayName || newMember.user.username).replace(/^【𝐊𝐙𝐋】\s*/u, '').trim();
+  if (newMember.manageable && added.includes('🐺・KIZIL KURT')) {
+    await newMember.setNickname([...`${tag} ${cleanName}`].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi').catch(() => null);
+  }
+  if (newMember.manageable && removed.includes('🐺・KIZIL KURT')) {
+    await newMember.setNickname(cleanName === newMember.user.username ? null : [...cleanName].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi kaldırıldı').catch(() => null);
+  }
   await sendLog(newMember.guild, '🎭・rol-log', '🎭 ROL DEĞİŞİKLİĞİ', `${newMember}\n${added.length ? `**Eklendi:** ${added.join(', ')}` : ''}\n${removed.length ? `**Kaldırıldı:** ${removed.join(', ')}` : ''}`, 0x9b59b6);
 });
 
@@ -744,7 +721,7 @@ client.on('guildMemberAdd', async (member) => {
   }
   const welcome = member.guild.channels.cache.find((channel) => channel.name === '👋・hoş-geldiniz' && channel.isTextBased());
   if (welcome) {
-    await welcome.send({ embeds: [new EmbedBuilder().setColor(0x8b0000).setTitle('☠ ARAMIZA HOŞ GELDİN').setDescription(`${member}, **KIZIL KURT** ailesine katıldın!\nSeninle birlikte **${member.guild.memberCount}** kişiyiz.\nKuralları okuyup rollerini seçmeyi unutma.`).setThumbnail(member.user.displayAvatarURL()).addFields({ name: 'Hesap yaşı', value: `${accountDays} gün`, inline: true })] }).catch(() => null);
+    await welcome.send({ embeds: [new EmbedBuilder().setColor(0x8b0000).setTitle('🐺 ARAMIZA HOŞ GELDİN').setDescription(`${member}, **KIZIL KURT** sunucusuna katıldın!\nŞu anda **KAYITSIZ** rolündesin. Yetkili kayıt yaptıktan sonra ana sunucuya erişebilirsin.\nSeninle birlikte **${member.guild.memberCount}** kişiyiz.`).setThumbnail(member.user.displayAvatarURL()).addFields({ name: 'Hesap yaşı', value: `${accountDays} gün`, inline: true })] }).catch(() => null);
   }
   await sendLog(member.guild, '📥・gelen-log', '📥 ÜYE KATILDI', `${member} (${member.id})\nHesap yaşı: **${accountDays} gün**\nDavet eden: ${inviterText}\nÜye sayısı: **${member.guild.memberCount}**`, accountDays < 7 ? 0xe74c3c : 0x2ecc71);
   if (accountDays < 7) await sendLog(member.guild, '🛡️・güvenlik-log', '⚠️ YENİ HESAP UYARISI', `${member} hesabı yalnızca **${accountDays} günlük**.`, 0xe74c3c);
