@@ -26,6 +26,7 @@ const TOKEN = envValue('TOKEN');
 const CLIENT_ID = envValue('CLIENT_ID', '1565487624129486848');
 const GUILD_ID = envValue('GUILD_ID', '1229703353378799749');
 const KURUCU_BOT_ROLE_ID = envValue('KURUCU_BOT_ROLE_ID', '1566897724178173982');
+const KIZIL_KURT_ROLE_ID = '1566902515008798790';
 const SETUP_ENABLED = process.env.SETUP_ENABLED !== 'false';
 
 if (!TOKEN) {
@@ -253,24 +254,26 @@ client.once('clientReady', async () => {
   console.log(`✅ ${commands.length} komut yüklendi.`);
 });
 
-// Rol Değişikliklerinde Etiket Ekleme/Kaldırma
+// Belirtilen Rol ID'sine göre otomatik etiket ekleme/kaldırma
 client.on('guildMemberUpdate', async (oldMember, newMember) => {
-  const added = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id)).map(role => role.name);
-  const removed = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id)).map(role => role.name);
-  
-  if (!added.length && !removed.length) return;
+  const hadRole = oldMember.roles.cache.has(KIZIL_KURT_ROLE_ID);
+  const hasRole = newMember.roles.cache.has(KIZIL_KURT_ROLE_ID);
+
+  if (hadRole === hasRole) return;
 
   const tag = '【𝐊𝐙𝐋】';
   const cleanName = String(newMember.displayName || newMember.user.username).replace(/^【𝐊𝐙𝐋】\s*/u, '').trim();
 
-  // Kızıl Kurt Rolü Verildiğinde İsim Güncelleme
-  if (newMember.manageable && (added.includes('🐺・KIZIL KURT') || added.some(r => r.includes('KIZIL KURT')))) {
-    await newMember.setNickname([...`${tag} ${cleanName}`].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi').catch(() => null);
+  // Rol Verildiğinde Başına Etiket Ekle
+  if (hasRole && newMember.manageable) {
+    const newNick = [...`${tag} ${cleanName}`].slice(0, 32).join('');
+    await newMember.setNickname(newNick, 'Kızıl Kurt rolü verildi').catch(() => null);
   }
 
-  // Kızıl Kurt Rolü Alındığında Etiketi Temizleme
-  if (newMember.manageable && (removed.includes('🐺・KIZIL KURT') || removed.some(r => r.includes('KIZIL KURT')))) {
-    await newMember.setNickname(cleanName === newMember.user.username ? null : [...cleanName].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi kaldırıldı').catch(() => null);
+  // Rol Alındığında Etiketi Kaldır
+  if (!hasRole && newMember.manageable) {
+    const originalName = cleanName === newMember.user.username ? null : [...cleanName].slice(0, 32).join('');
+    await newMember.setNickname(originalName, 'Kızıl Kurt rolü alındı').catch(() => null);
   }
 });
 
