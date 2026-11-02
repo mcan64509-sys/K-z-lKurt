@@ -6,7 +6,7 @@ const { DefaultExtractors } = require('@discord-player/extractor');
 const { YouTubeDlpExtractor, setFFmpegPath, setYtDlpPath } = require('discord-player-youtubedlp');
 
 const CONFIG = {
-  guildId: '1566891559541014578',
+  guildId: '1566896341068685525',
   bossChannelId: '1565503098347200722',
   timezone: 'Europe/Istanbul',
   jotunTimes: ['00:15', '18:15', '21:15'],
