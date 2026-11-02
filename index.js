@@ -25,6 +25,7 @@ function envValue(name, fallback = '') {
 const TOKEN = envValue('TOKEN');
 const CLIENT_ID = envValue('CLIENT_ID', '1565487624129486848');
 const GUILD_ID = envValue('GUILD_ID', '1229703353378799749');
+const KURUCU_BOT_ROLE_ID = envValue('KURUCU_BOT_ROLE_ID', '1566897724178173982');
 const SETUP_ENABLED = process.env.SETUP_ENABLED !== 'false';
 
 if (!TOKEN) {
@@ -179,26 +180,16 @@ async function createText(channel, title, description, color = 0x8b0000, compone
   });
 }
 
-function findChannel(guild, name) {
-  return guild.channels.cache.find(channel => channel.name === name && channel.isTextBased());
-}
-
-async function sendLog(guild, channelName, title, description, color = 0x5865f2) {
-  const channel = findChannel(guild, channelName);
-  if (!channel) return;
-  await createText(channel, title, description.slice(0, 4000), color).catch(() => null);
-}
-
 async function buildServer(guild) {
   await guild.setName('KIZILKURT DİSCORD').catch(() => null);
 
   await guild.roles.fetch();
   const blockedRoles = [...guild.roles.cache.values()].filter(
-    (role) => role.id !== guild.id && !role.managed && !role.editable,
+    (role) => role.id !== guild.id && !role.managed && !role.editable && role.id !== KURUCU_BOT_ROLE_ID
   );
   if (blockedRoles.length) {
     throw new Error(
-      `Kurucu Bot rolü bazı rollerin altında: ${blockedRoles.map((role) => role.name).join(', ')}. Bot rolünü en üste taşıyın.`,
+      `Kurucu Bot rolü bazı rollerin altında: ${blockedRoles.map((role) => role.name).join(', ')}. Bot rolünü en üste taşıyın.`
     );
   }
 
@@ -206,7 +197,7 @@ async function buildServer(guild) {
   for (const channel of deletableChannels) await channel.delete('KIZIL KURT sıfır kurulum');
 
   const deletableRoles = [...guild.roles.cache.values()]
-    .filter((role) => role.id !== guild.id && !role.managed && role.editable)
+    .filter((role) => role.id !== guild.id && !role.managed && role.editable && role.id !== KURUCU_BOT_ROLE_ID)
     .sort((a, b) => a.position - b.position);
   for (const role of deletableRoles) await role.delete('KIZIL KURT sıfır kurulum');
 
@@ -260,6 +251,27 @@ client.once('clientReady', async () => {
   const rest = new REST({ version: '10' }).setToken(TOKEN);
   await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands.map(command => command.toJSON()) });
   console.log(`✅ ${commands.length} komut yüklendi.`);
+});
+
+// Rol Değişikliklerinde Etiket Ekleme/Kaldırma
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+  const added = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id)).map(role => role.name);
+  const removed = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id)).map(role => role.name);
+  
+  if (!added.length && !removed.length) return;
+
+  const tag = '【𝐊𝐙𝐋】';
+  const cleanName = String(newMember.displayName || newMember.user.username).replace(/^【𝐊𝐙𝐋】\s*/u, '').trim();
+
+  // Kızıl Kurt Rolü Verildiğinde İsim Güncelleme
+  if (newMember.manageable && (added.includes('🐺・KIZIL KURT') || added.some(r => r.includes('KIZIL KURT')))) {
+    await newMember.setNickname([...`${tag} ${cleanName}`].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi').catch(() => null);
+  }
+
+  // Kızıl Kurt Rolü Alındığında Etiketi Temizleme
+  if (newMember.manageable && (removed.includes('🐺・KIZIL KURT') || removed.some(r => r.includes('KIZIL KURT')))) {
+    await newMember.setNickname(cleanName === newMember.user.username ? null : [...cleanName].slice(0, 32).join(''), 'Kızıl Kurt rol etiketi kaldırıldı').catch(() => null);
+  }
 });
 
 client.on('interactionCreate', async (interaction) => {
